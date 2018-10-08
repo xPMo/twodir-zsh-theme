@@ -132,24 +132,11 @@ prompt_pure_preprompt_render() {
 	# Execution time.
 	[[ -n $prompt_pure_cmd_exec_time ]] && preprompt_parts+=('%F{yellow}${prompt_pure_cmd_exec_time}%f')
 
-	local cleaned_ps1=$PROMPT
 	local -H MATCH MBEGIN MEND
-	if [[ $PROMPT = *$prompt_newline* ]]; then
-		# Remove everything from the prompt until the newline. This
-		# removes the preprompt and only the original PROMPT remains.
-		cleaned_ps1=${PROMPT##*${prompt_newline}}
-	fi
 	unset MATCH MBEGIN MEND
 
 	# Construct the new prompt with a clean preprompt.
-	local -ah ps1
-	ps1=(
-		${(j. .)preprompt_parts}  # Join parts, space separated.
-		$prompt_newline           # Separate preprompt and prompt.
-		$cleaned_ps1
-	)
-
-	PROMPT="${(j..)ps1}"
+	PROMPT="${(j. .)preprompt_parts} "  # Join parts, space separated.
 
 	# Expand the prompt for future comparision.
 	local expanded_prompt
@@ -157,7 +144,6 @@ prompt_pure_preprompt_render() {
 
 	if [[ $1 == precmd ]]; then
 		# Initial newline, for spaciousness.
-		print
 	elif [[ $prompt_pure_last_prompt != $expanded_prompt ]]; then
 		# Redraw the prompt.
 		zle && zle .reset-prompt
@@ -565,11 +551,6 @@ prompt_pure_setup() {
 	# initialized via promptinit.
 	setopt noprompt{bang,cr,percent,subst} "prompt${^prompt_opts[@]}"
 
-	if [[ -z $prompt_newline ]]; then
-		# This variable needs to be set, usually set by promptinit.
-		typeset -g prompt_newline=$'\n%{\r%}'
-	fi
-
 	zmodload zsh/datetime
 	zmodload zsh/zle
 	zmodload zsh/parameter
@@ -595,10 +576,10 @@ prompt_pure_setup() {
 	fi
 
 	# if a virtualenv is activated, display it in grey
-	PROMPT='%(12V.%F{242}%12v%f .)'
+	PROMPT+='%(12V.%F{242}%12v%f .)'
 
-	# prompt turns red if the previous command didn't exit with 0
-	PROMPT+='%(?.%F{magenta}.%F{red})${prompt_pure_state[prompt]}%f '
+	# set RPS1 to the return code if nonzero
+	RPS1="%(?..%F{red}%? ↵%f)"
 
 	# Store prompt expansion symbols for in-place expansion via (%). For
 	# some reason it does not work without storing them in a variable first.
@@ -626,8 +607,6 @@ prompt_pure_setup() {
 	# Improve the debug prompt (PS4), show depth by repeating the +-sign and
 	# add colors to highlight essential parts like file and function name.
 	PROMPT4="${ps4_parts[depth]} ${ps4_symbols}${ps4_parts[prompt]}"
-
-	unset ZSH_THEME  # Guard against Oh My Zsh themes overriding Pure.
 }
 
 prompt_pure_setup "$@"
