@@ -1,4 +1,4 @@
-# Pure
+# Twodir (Fork of Pure)
 
 > Pretty, minimal and fast ZSH prompt
 

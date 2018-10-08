@@ -10,7 +10,7 @@
 # prompt:
 # %F => color dict
 # %f => reset color
-# %~ => current path
+# %2~ => twodir current path
 # %* => time
 # %n => username
 # %m => shortname host
@@ -115,7 +115,7 @@ prompt_pure_preprompt_render() {
 	local -a preprompt_parts
 
 	# Set the path.
-	preprompt_parts+=('%F{blue}%~%f')
+	preprompt_parts+=('%F{blue}%2~%f')
 
 	# Add git branch and dirty status info.
 	typeset -gA prompt_pure_vcs_info
@@ -172,7 +172,7 @@ prompt_pure_precmd() {
 	unset prompt_pure_cmd_timestamp
 
 	# shows the full path in the title
-	prompt_pure_set_title 'expand-prompt' '%~'
+	prompt_pure_set_title 'expand-prompt' '%2~'
 
 	# preform async git dirty check and fetch
 	prompt_pure_async_tasks
