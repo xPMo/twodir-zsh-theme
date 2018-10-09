@@ -58,6 +58,9 @@ prompt_pure_set_title() {
 	# emacs terminal does not support settings the title
 	(( ${+EMACS} )) && return
 
+	# don't set if not asked to
+	[[  $DISABLE_AUTO_TITLE == true ]] && return
+
 	case $TTY in
 		# Don't set title over serial console.
 		/dev/ttyS[0-9]*) return;;
