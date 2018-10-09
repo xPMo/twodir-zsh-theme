@@ -117,8 +117,14 @@ prompt_pure_preprompt_render() {
 	# Initialize the preprompt array.
 	local -a preprompt_parts
 
-	# Set the path.
-	preprompt_parts+=('%F{blue}%2~%f')
+	# Set the path, colored by ownership/permissions
+	if (( $(stat -c "%u" . ) == UID )); then
+		preprompt_parts+=('%F{blue}%2~%f')
+	elif [[ -w . ]]; then
+		preprompt_parts+=('%F{yellow}%2~%f')
+	else
+		preprompt_parts+=('%F{magenta}%2~%f')
+	fi
 
 	# Add git branch and dirty status info.
 	typeset -gA prompt_pure_vcs_info
