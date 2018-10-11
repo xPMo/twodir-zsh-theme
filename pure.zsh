@@ -133,7 +133,7 @@ prompt_pure_preprompt_render() {
 	# Add git branch, dirty status, and push/pull info.
 	typeset -gA prompt_pure_vcs_info
 	if [[ -n $prompt_pure_vcs_info[branch] ]]; then
-		preprompt_parts+=("%F{$git_color}"'${prompt_pure_vcs_info[branch]}${prompt_pure_git_dirty}%F{cyan}${prompt_pure_git_arrows}%f')
+		preprompt_parts+=("%F{$git_color}"'${prompt_pure_vcs_info[branch]}${prompt_pure_git_dirty}%F{cyan}${prompt_pure_git_status}%f')
 	fi
 
 	# Execution time.
@@ -293,10 +293,10 @@ prompt_pure_async_git_fetch() {
 	unsetopt monitor
 
 	# check arrow status after a successful git fetch
-	prompt_pure_async_git_arrows
+	prompt_pure_async_git_status
 }
 
-prompt_pure_async_git_arrows() {
+prompt_pure_async_git_status() {
 	setopt localoptions noshwordsplit
 	command git rev-list --left-right --count HEAD...@'{u}'
 }
@@ -324,7 +324,7 @@ prompt_pure_async_tasks() {
 		# reset git preprompt variables, switching working tree
 		unset prompt_pure_git_dirty
 		unset prompt_pure_git_last_dirty_check_timestamp
-		unset prompt_pure_git_arrows
+		unset prompt_pure_git_status
 		unset prompt_pure_git_fetch_pattern
 		prompt_pure_vcs_info[branch]=
 		prompt_pure_vcs_info[top]=
@@ -349,7 +349,7 @@ prompt_pure_async_refresh() {
 		async_job "prompt_pure" prompt_pure_async_git_aliases
 	fi
 
-	async_job "prompt_pure" prompt_pure_async_git_arrows
+	async_job "prompt_pure" prompt_pure_async_git_status
 
 	# do not preform git fetch if it is disabled or in home folder.
 	if (( ${PURE_GIT_PULL:-1} )) && [[ $prompt_pure_vcs_info[top] != $HOME ]]; then
@@ -368,24 +368,14 @@ prompt_pure_async_refresh() {
 
 prompt_pure_check_git_status() {
 	setopt localoptions noshwordsplit
-	local arrows left=${1:-0} right=${2:-0}
+	local ret left=${1:-0} right=${2:-0}
 
-	(( right > 0 )) && arrows+="%F{red}$right"
-	(( left > 0 )) && arrows+="%F{green}$left"
+	(( left > 0 )) && ret+="%F{green}$left"
+	(( left * right > 0 )) && ret+="%F{242}:"
+	(( right > 0 )) && ret+="%F{red}$right"
 
-	[[ -n $arrows ]] || return
-	typeset -g REPLY=$arrows
-}
-
-prompt_pure_check_git_arrows() {
-	setopt localoptions noshwordsplit
-	local arrows left=${1:-0} right=${2:-0}
-
-	(( right > 0 )) && arrows+=${PURE_GIT_DOWN_ARROW:-⇣}
-	(( left > 0 )) && arrows+=${PURE_GIT_UP_ARROW:-⇡}
-
-	[[ -n $arrows ]] || return
-	typeset -g REPLY=$arrows
+	[[ -n $ret ]] || return
+	typeset -g REPLY="%F{242}[$ret%F{242}]"
 }
 
 prompt_pure_async_callback() {
@@ -456,15 +446,15 @@ prompt_pure_async_callback() {
 			# variable. Thus, only upon next rendering of the preprompt will the result appear in a different color.
 			(( $exec_time > 5 )) && prompt_pure_git_last_dirty_check_timestamp=$EPOCHSECONDS
 			;;
-		prompt_pure_async_git_fetch|prompt_pure_async_git_arrows)
-			# prompt_pure_async_git_fetch executes prompt_pure_async_git_arrows
+		prompt_pure_async_git_fetch|prompt_pure_async_git_status)
+			# prompt_pure_async_git_fetch executes prompt_pure_async_git_status
 			# after a successful fetch.
 			case $code in
 				0)
 					local REPLY
-					prompt_pure_check_git_arrows ${(ps:\t:)output}
-					if [[ $prompt_pure_git_arrows != $REPLY ]]; then
-						typeset -g prompt_pure_git_arrows=$REPLY
+					prompt_pure_check_git_status ${(ps:\t:)output}
+					if [[ $prompt_pure_git_status != $REPLY ]]; then
+						typeset -g prompt_pure_git_status=$REPLY
 						do_render=1
 					fi
 					;;
@@ -472,10 +462,10 @@ prompt_pure_async_callback() {
 					# Git fetch failed.
 					;;
 				*)
-					# Non-zero exit status from prompt_pure_async_git_arrows,
+					# Non-zero exit status from prompt_pure_async_git_status,
 					# indicating that there is no upstream configured.
-					if [[ -n $prompt_pure_git_arrows ]]; then
-						unset prompt_pure_git_arrows
+					if [[ -n $prompt_pure_git_status ]]; then
+						unset prompt_pure_git_status
 						do_render=1
 					fi
 					;;
@@ -550,7 +540,7 @@ prompt_pure_state_setup() {
 	if [[ -n $ssh_connection ]]; then
 		# if user defines _prompt_pure_username, it will be used to parse
 		# and replace the default %n@%m
-		if typeset -f _prompt_pure_username >/dev/nulll; then
+		if typeset -f _prompt_pure_username >/dev/null; then
 			username=$(_prompt_pure_username $USER $HOST)
 		else
 			username='%F{242}%n@%m%f'
