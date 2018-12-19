@@ -558,14 +558,11 @@ prompt_pure_state_setup() {
 }
 
 prompt_pure_setup() {
-	# Prevent percentage showing up if output doesn't end with a newline.
-	export PROMPT_EOL_MARK=''
-
 	prompt_opts=(subst percent)
 
 	# borrowed from promptinit, sets the prompt options in case pure was not
 	# initialized via promptinit.
-	setopt noprompt{bang,cr,percent,subst} "prompt${^prompt_opts[@]}"
+	setopt noprompt{bang,percent,subst} "prompt${^prompt_opts[@]}"
 
 	zmodload zsh/datetime
 	zmodload zsh/zle
