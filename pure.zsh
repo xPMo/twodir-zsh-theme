@@ -108,7 +108,7 @@ prompt_pure_preexec() {
 }
 
 prompt_pure_preprompt_render() {
-	setopt localoptions noshwordsplit
+	setopt localoptions noshwordsplit extendedglob
 
 	# Set color for git branch/dirty status, change color if dirty checking has
 	# been delayed.
@@ -122,7 +122,7 @@ prompt_pure_preprompt_render() {
 	[[ -n $prompt_pure_state[username] ]] && preprompt_parts+=('${prompt_pure_state[username]}')
 
 	# Set the path, colored by ownership/permissions
-	if (( $(stat -c "%u" . ) == UID )); then
+	if [[ -n .(#qNu$UID) ]]; then
 		preprompt_parts+=('%F{blue}%2~%f')
 	elif [[ -w . ]]; then
 		preprompt_parts+=('%F{yellow}%2~%f')
