@@ -14,6 +14,9 @@ Most prompts are verbose and slow. I wanted something that fit in one line, ran 
 ### Why?
 
 * Displays the current and parent directory, the full path is often too much for a single line, and the cwd is often not enough context.
+* Displays the directory in a color indicating whether the user has ownership or write permissions. *(This check is done with native Zsh globbing qualifiers!)*
+<img src="dir-screenshot.png" width="864">
+
 - Comes with the best prompt character: no prompt character.
 - Shows `git` branch and whether it's dirty (with a `*`).
 - Indicates when you have unpushed/unpulled `git` commits and how many. *(Check is done asynchronously!)*
