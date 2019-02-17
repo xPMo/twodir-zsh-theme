@@ -127,7 +127,7 @@ prompt_pure_preprompt_render() {
 	if (( $_cwd_stat[5] == UID )); then
 		# owned by UID
 		preprompt_parts+=('%F{blue}%2~%f')
-	elif (( ${usergroups[(r)$_cwd_stat[6]]} * ($_cwd_stat[3] & 8#70 == 8#70) )); then
+	elif (( ${usergroups[(r)$_cwd_stat[6]]:-0} * ($_cwd_stat[3] & 8#70 == 8#70) )); then
 		# has GID, and rwx perms
 		preprompt_parts+=('%F{cyan}%2~%f')
 	elif (( ($_cwd_stat[3] & 8#7) == 8#7 )); then
