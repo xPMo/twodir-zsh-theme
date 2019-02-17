@@ -110,6 +110,7 @@ prompt_pure_preexec() {
 prompt_pure_preprompt_render() {
 	setopt localoptions noshwordsplit extendedglob
 
+	zmodload zsh/stat
 	# Set color for git branch/dirty status, change color if dirty checking has
 	# been delayed.
 	local git_color=cyan
@@ -122,9 +123,15 @@ prompt_pure_preprompt_render() {
 	[[ -n $prompt_pure_state[username] ]] && preprompt_parts+=('${prompt_pure_state[username]}')
 
 	# Set the path, colored by ownership/permissions
-	if [[ -n .(#qNu$UID) ]]; then
+	zstat -A _cwd_stat .
+	if (( $_cwd_stat[5] == UID )); then
+		# owned by UID
 		preprompt_parts+=('%F{blue}%2~%f')
-	elif [[ -w . ]]; then
+	elif (( ${usergroups[(r)$_cwd_stat[6]]} )) && (( $_cwd_stat[3] & 8#70 == 8#70 )); then
+		# has GID, and rwx perms
+		preprompt_parts+=('%F{green}%2~%f')
+	elif (( ($_cwd_stat[3] & 8#1007) == 8#1007 )); then
+		# ......rwt
 		preprompt_parts+=('%F{yellow}%2~%f')
 	else
 		preprompt_parts+=('%F{magenta}%2~%f')
