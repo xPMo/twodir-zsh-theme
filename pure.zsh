@@ -12,6 +12,7 @@
 # %F => color dict
 # %f => reset color
 # %2~ => twodir current path
+# %~ => current path
 # %* => time
 # %n => username
 # %m => shortname host
@@ -107,6 +108,31 @@ prompt_pure_preexec() {
 	export VIRTUAL_ENV_DISABLE_PROMPT=${VIRTUAL_ENV_DISABLE_PROMPT:-12}
 }
 
+get_unique_path() {
+	local directory test_dir test_dir_length
+	local -a matching
+	local -a paths
+	local expanded="${(%)1}"
+	# prefix of absolute path
+	local cur_path="${2%${expanded#*/}}"
+	# prefix of tilde-collapsed path
+	local trunc_path="${expanded%%/*}"
+	paths=( ${(s:/:)${2#$cur_path}} )
+	for directory in ${paths[@]}; do
+		test_dir=''
+		local -i i=1
+		while
+			test_dir+=$directory[i]
+			matching=("$cur_path"/"$test_dir"*/(N))
+			(( i < ${#directory} && $#matching > 1 ))
+		do (( i++ ))
+		done
+		trunc_path+="/$test_dir"
+		cur_path+="$directory/"
+	done
+	echo "${trunc_path:-/}"
+}
+
 prompt_pure_preprompt_render() {
 	setopt localoptions noshwordsplit extendedglob
 
@@ -126,17 +152,16 @@ prompt_pure_preprompt_render() {
 	zstat -A _cwd_stat .
 	if (( $_cwd_stat[5] == UID )); then
 		# owned by UID
-		preprompt_parts+=('%F{blue}%2~%f')
+		preprompt_parts+=('%F{blue}'"$(get_unique_path '%~' "$PWD")"'%f')
 	elif (( ${usergroups[(r)$_cwd_stat[6]]:-0} * ($_cwd_stat[3] & 8#70 == 8#70) )); then
 		# has GID, and rwx perms
-		preprompt_parts+=('%F{cyan}%2~%f')
+		preprompt_parts+=('%F{cyan}'"$(get_unique_path '%~' "$PWD")"'%f')
 	elif (( ($_cwd_stat[3] & 8#7) == 8#7 )); then
 		# all users have rwx
-		preprompt_parts+=('%F{yellow}%2~%f')
+		preprompt_parts+=('%F{yellow}'"$(get_unique_path '%~' "$PWD")"'%f')
 	else
-		preprompt_parts+=('%F{magenta}%2~%f')
+		preprompt_parts+=('%F{magenta}'"$(get_unique_path '%~' "$PWD")"'%f')
 	fi
-
 	# Add git branch, dirty status, and push/pull info.
 	typeset -gA prompt_pure_vcs_info
 	if [[ -n $prompt_pure_vcs_info[branch] ]]; then
@@ -172,7 +197,7 @@ prompt_pure_precmd() {
 	unset prompt_pure_cmd_timestamp
 
 	# shows the full path in the title
-	prompt_pure_set_title 'expand-prompt' '%2~'
+	prompt_pure_set_title 'expand-prompt' '%~'
 
 	# preform async git dirty check and fetch
 	prompt_pure_async_tasks
