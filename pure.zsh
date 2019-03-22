@@ -110,7 +110,7 @@ prompt_pure_preexec() {
 prompt_pure_preprompt_render() {
 	setopt localoptions noshwordsplit extendedglob
 
-	zmodload zsh/stat
+	zmodload -F zsh/stat b:zstat
 	# Set color for git branch/dirty status, change color if dirty checking has
 	# been delayed.
 	local git_color=cyan
