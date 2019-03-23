@@ -109,25 +109,24 @@ prompt_pure_preexec() {
 }
 
 get_unique_path() {
-	local directory test_dir test_dir_length
+	local dir test_dir test_dir_length
 	local -a matching
 	local -a paths
 	local expanded="${(%)1}"
 	# prefix of absolute path
-	local cur_path="${2%${expanded#*/}}"
+	local cur_path="${${2:-$PWD}%${expanded#*/}}"
 	# prefix of tilde-collapsed path
 	local trunc_path="${expanded%%/*}"
 	paths=( ${(s:/:)${2#$cur_path}} )
-	for directory in ${paths[@]}; do
-		test_dir=''
+	for dir in ${paths[@]}; do
 		local -i i=1
 		while
-			test_dir+=$directory[i]
-			matching=("$cur_path"/"$test_dir"*/(N))
-			(( i < ${#directory} && $#matching > 1 ))
+			# N:nullglob oN:no sort Y2:at most 2
+			matching=("$cur_path/${dir[0,i]}"*/(NoNY2))
+			(( i < ${#dir} && $#matching == 2 ))
 		do (( i++ ))
 		done
-		trunc_path+="/$test_dir"
+		trunc_path+="/${dir[0,i]}"
 		cur_path+="$directory/"
 	done
 	echo "${trunc_path:-/}"
