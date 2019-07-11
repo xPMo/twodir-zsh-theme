@@ -134,7 +134,6 @@ prompt_pure_preprompt_render() {
 	# Initialize the preprompt array.
 	local -a preprompt_parts
 
-<<<<<<< HEAD
 	# Username and machine, if applicable.
 	[[ -n $prompt_pure_state[username] ]] && preprompt_parts+=('${prompt_pure_state[username]}')
 
@@ -190,13 +189,8 @@ prompt_pure_precmd() {
 	prompt_pure_check_cmd_exec_time
 	unset prompt_pure_cmd_timestamp
 
-<<<<<<< HEAD
-	# shows the full path in the title
-	prompt_pure_set_title 'expand-prompt' '%2~'
-=======
 	# Shows the full path in the title.
-	prompt_pure_set_title 'expand-prompt' '%~'
->>>>>>> upstream/master
+	prompt_pure_set_title 'expand-prompt' '%2~'
 
 	# Modify the colors if some have changed..
 	prompt_pure_set_colors
@@ -483,7 +477,6 @@ prompt_pure_async_callback() {
 			# rendering of the preprompt will the result appear in a different color.
 			(( $exec_time > 5 )) && prompt_pure_git_last_dirty_check_timestamp=$EPOCHSECONDS
 			;;
-<<<<<<< HEAD
 		prompt_pure_async_git_fetch|prompt_pure_async_git_status)
 			# `prompt_pure_async_git_fetch` executes `prompt_pure_async_git_arrows`
 			# after a successful fetch.
@@ -591,7 +584,6 @@ prompt_pure_state_setup() {
 		unset MATCH MBEGIN MEND
 	fi
 
-<<<<<<< HEAD
 	# show username@host or user custom parser if logged in through SSH
 	if [[ -n $ssh_connection ]]; then
 		# if user defines _prompt_pure_username, it will be used to parse
