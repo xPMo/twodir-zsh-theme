@@ -141,15 +141,15 @@ prompt_pure_preprompt_render() {
 	zstat -A _cwd_stat .
 	if (( $_cwd_stat[5] == UID )); then
 		# owned by UID
-		preprompt_parts+=('%F{blue}%2~%f')
+		preprompt_parts+=('%F{$prompt_pure_colors[path:user]}%2~%f')
 	elif (( ${usergroups[(r)$_cwd_stat[6]]:-0} * ($_cwd_stat[3] & 8#70 == 8#70) )); then
 		# has GID, and rwx perms
-		preprompt_parts+=('%F{cyan}%2~%f')
+		preprompt_parts+=('%F{$prompt_pure_colors[path:group]}%2~%f')
 	elif (( ($_cwd_stat[3] & 8#7) == 8#7 )); then
 		# all users have rwx
-		preprompt_parts+=('%F{yellow}%2~%f')
+		preprompt_parts+=('%F{$prompt_pure_colors[path:all]}%2~%f')
 	else
-		preprompt_parts+=('%F{magenta}%2~%f')
+		preprompt_parts+=('%F{$prompt_pure_colors[path:none]}%2~%f')
 	fi
 
 	# Add git branch, dirty status, and push/pull info.
@@ -682,10 +682,13 @@ prompt_pure_setup() {
 		git:bracket          242
 		git:ahead            green
 		git:behind           red
-		git:branch           242
+		git:branch           cyan
 		git:branch:cached    red
 		host                 242
-		path                 blue
+		path:user            blue
+		path:group           cyan
+		path:all             yellow
+		path:none            magenta
 		prompt:error         red
 		prompt:success       magenta
 		user                 242

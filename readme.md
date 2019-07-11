@@ -102,7 +102,10 @@ Colors can be changed by using [`zstyle`](http://zsh.sourceforge.net/Doc/Release
 - `git:branch` (242) - The name of the current branch when in a Git repository.
 - `git:branch:cached` (red) - The name of the current branch when the data isn't fresh.
 - `host` (242) - The hostname when on a remote machine.
-- `path` (blue) - The current path, for example, `PWD`.
+- `path:user` (blue) - The current directory when the user has user ownership
+- `path:group` (cyan) - ...when the user does not have user ownership, but does have group ownership
+- `path:all` (yellow) - ...when the user does not have user/group ownership, but does have rwx permissions
+- `path:none` (magenta) - ...when the user has no ownership and no rwx permissions
 - `prompt:error` (red) - The `PURE_PROMPT_SYMBOL` when the previous command has *failed*.
 - `prompt:success` (magenta) - The `PURE_PROMPT_SYMBOL` when the previous command has *succeded*.
 - `user` (242) - The username when on remote machine.
