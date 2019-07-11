@@ -94,7 +94,7 @@ As explained in ZSH's [manual](http://zsh.sourceforge.net/Doc/Release/Zsh-Line-E
 - The name of one of the following nine colors: `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, and `default` (the terminal’s default foreground)
 - `#` followed by an RGB triplet in hexadecimal format, for example `#424242`. Only if your terminal supports 24-bit colors (true color) or when the [`zsh/nearcolor` module](http://zsh.sourceforge.net/Doc/Release/Zsh-Modules.html#The-zsh_002fnearcolor-Module) is loaded.
 
-Colors can be changed by using [`zstyle`](http://zsh.sourceforge.net/Doc/Release/Zsh-Modules.html#The-zsh_002fzutil-Module) with a pattern of the form `:prompt:pure:$color_name` and style `color`. The color names, their default, and what part they affect are:
+Colors can be changed by using `[zstyle](http://zsh.sourceforge.net/Doc/Release/Zsh-Modules.html#The-zsh_002fzutil-Module)` with a pattern of the form `:prompt:pure:$color_name` and style `color`. The color names, their default, and what part they affect are:
 - `execution_time` (yellow) - The execution time of the last command when exceeding `PURE_CMD_MAX_EXEC_TIME`.
 - `git:ahead` (green) - If local repo has commits remote does not
 - `git:behind` (red) - If remote repo has commits local does not
@@ -115,17 +115,17 @@ Colors can be changed by using [`zstyle`](http://zsh.sourceforge.net/Doc/Release
 The following diagram shows where each color is applied on the prompt:
 
 ```
-path
+path:*
 |          git:branch
-|          |       git:arrow
-|          |       |        host
-|          |       |        |
-~/dev/pure master* ⇡ zaphod@heartofgold  42s
-venv ❯               |                   |
-|    |               |                   execution_time
-|    |               user
-|    prompt
-virtualenv
+|          |       git:bracket
+|          |       | | |        host
+|          |       | | |        |
+~/dev/pure master* [4:2] zaphod@heartofgold  42s
+     |              | |  |                    |
+     |    git:ahead-' |  user                 execution_time
+     |                |  
+     |          git:behind
+     prompt
 ```
 
 ### RGB colors
