@@ -406,12 +406,12 @@ prompt_pure_check_git_status() {
 	setopt localoptions noshwordsplit
 	local ret left=${1:-0} right=${2:-0}
 
-	(( left )) && ret+="%F{green}$left"
-	(( left  && right )) && ret+="%F{242}:"
-	(( right )) && ret+="%F{red}$right"
+	(( left )) && ret+="%F{${prompt_pure_colors[git:ahead]}}$left"
+	(( left  && right )) && ret+="%F{${prompt_pure_colors[git:bracket]}}:"
+	(( right )) && ret+="%F{${prompt_pure_colors[git:behind]}}$right"
 
 	[[ -n $ret ]] || return
-	typeset -g REPLY="%F{242}[$ret%F{242}]"
+	typeset -g REPLY="%F{${prompt_pure_colors[git:bracket]}}[$ret%F{${prompt_pure_colors[git:bracket]}}]"
 }
 
 prompt_pure_async_callback() {
@@ -687,7 +687,9 @@ prompt_pure_setup() {
 	typeset -gA prompt_pure_colors_default prompt_pure_colors
 	prompt_pure_colors_default=(
 		execution_time       yellow
-		git:arrow            cyan
+		git:bracket          242
+		git:ahead            green
+		git:behind           red
 		git:branch           242
 		git:branch:cached    red
 		host                 242
