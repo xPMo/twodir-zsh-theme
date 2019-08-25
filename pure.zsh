@@ -743,6 +743,9 @@ prompt_pure_setup() {
 	# add colors to highlight essential parts like file and function name.
 	PROMPT4="${ps4_parts[depth]} ${ps4_symbols}${ps4_parts[prompt]}"
 
+	# RPS1 exit code:
+	RPS1='%(?..%F{red}%? ↵%f)'
+
 	# Guard against Oh My Zsh themes overriding Pure.
 	unset ZSH_THEME
 }
