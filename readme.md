@@ -32,35 +32,13 @@ Can be installed with your favorite plugin manager. Requires Git 2.0.0+ and ZSH 
 
 ### Manually
 
-1. Either…
-  - Clone this repo
-  - add it as a submodule, or
-  - just download [`pure.zsh`](pure.zsh) and [`async.zsh`](async.zsh)
-
-2. Symlink `pure.zsh` to somewhere in [`$fpath`](https://www.refining-linux.org/archives/46-ZSH-Gem-12-Autoloading-functions.html) with the name `prompt_pure_setup`.
-
-3. Symlink `async.zsh` in `$fpath` with the name `async`.
-
-#### Example
-
-```console
-$ ln -s "$PWD/pure.zsh" /usr/local/share/zsh/site-functions/prompt_pure_setup
-$ ln -s "$PWD/async.zsh" /usr/local/share/zsh/site-functions/async
-```
-*Run `echo $fpath` to see possible locations.*
-
-For a user-specific installation (which would not require escalated privileges), simply add a directory to `$fpath` for that user:
+1. Clone this repo somewhere. Here we'll use `$HOME/.zsh/pure`.
+2. Add the path of the cloned repo to `$fpath` in `$HOME/.zshrc`.
 
 ```sh
-# .zshenv or .zshrc
-fpath=("$HOME/.zfunctions" $fpath)
-```
-
-Then install the theme there:
-
-```console
-$ ln -s "$PWD/pure.zsh" "$HOME/.zfunctions/prompt_pure_setup"
-$ ln -s "$PWD/async.zsh" "$HOME/.zfunctions/async"
+mkdir -p "$HOME/.zsh"
+git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure"
+fpath+=("$HOME/.zsh/pure")
 ```
 
 
@@ -115,17 +93,19 @@ Colors can be changed by using `[zstyle](http://zsh.sourceforge.net/Doc/Release/
 The following diagram shows where each color is applied on the prompt:
 
 ```
-path:*
-|          git:branch
-|          |       git:bracket
-|          |       | | |        host
-|          |       | | |        |
-~/dev/pure master* [4:2] zaphod@heartofgold  42s
-     |              | |  |                    |
-     |    git:ahead-' |  user                 execution_time
-     |                |  
-     |          git:behind
-     prompt
+┌───────────────────────────────────────────── path
+│          ┌────────────────────────────────── git:branch
+│          │        ┌───────────────────────── git:ahead
+│          │        │ ┌─────────────────────── git:behind
+│          │        │ │           ┌─────────── host
+│          │        │ │           │
+dev/pure master* [4:2] zaphod@heartofgold 42s
+venv ❯           │ │ │   │                 │
+│    │           │ │ │   │                 └── execution_time
+│    │           │ │ │   └──────────────────── user
+│    │           └─┴─┴──────────────────────── git:bracket
+│    └──────────────────────────────────────── prompt
+└───────────────────────────────────────────── virtualenv
 ```
 
 ### RGB colors
