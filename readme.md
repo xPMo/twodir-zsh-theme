@@ -37,8 +37,8 @@ Can be installed with your favorite plugin manager. Requires Git 2.0.0+ and ZSH 
 
 ```sh
 mkdir -p "$HOME/.zsh"
-git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure"
-fpath+=("$HOME/.zsh/pure")
+git clone https://github.com/xPMo/twodir-zsh-theme.git "$HOME/.zsh/twodir-theme"
+fpath+=("$HOME/.zsh/twodir-theme")
 ```
 
 
