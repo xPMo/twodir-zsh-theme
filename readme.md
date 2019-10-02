@@ -77,7 +77,7 @@ Colors can be changed by using `[zstyle](http://zsh.sourceforge.net/Doc/Release/
 - `git:ahead` (green) - If local repo has commits remote does not
 - `git:behind` (red) - If remote repo has commits local does not
 - `git:bracket` (242) - \[Brackets\] and colon surrounding ahead/behind count
-- `git:branch` (242) - The name of the current branch when in a Git repository.
+- `git:branch` (cyan) - The name of the current branch when in a Git repository.
 - `git:branch:cached` (red) - The name of the current branch when the data isn't fresh.
 - `host` (242) - The hostname when on a remote machine.
 - `path:user` (blue) - The current directory when the user has user ownership
@@ -95,10 +95,10 @@ The following diagram shows where each color is applied on the prompt:
 ```
 ┌───────────────────────────────────────────── path
 │          ┌────────────────────────────────── git:branch
-│          │        ┌───────────────────────── git:ahead
-│          │        │ ┌─────────────────────── git:behind
-│          │        │ │           ┌─────────── host
-│          │        │ │           │
+│          │      ┌─────────────────────────── git:ahead
+│          │      │ ┌───────────────────────── git:behind
+│          │      │ │           ┌───────────── host
+│          │      │ │           │
 dev/pure master* [4:2] zaphod@heartofgold 42s
 venv ❯           │ │ │   │                 │
 │    │           │ │ │   │                 └── execution_time
