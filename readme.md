@@ -1,3 +1,9 @@
+**NO LONGER MAINTAINED**:
+
+I am now using Powerlevel10k as my theme,
+see my Zsh dotfiles [here](https://gitlab.com/gamma-neodots/neodots.zsh/).
+
+
 # Twodir (Fork of Pure)
 
 > Pretty, compact, and fast ZSH prompt
